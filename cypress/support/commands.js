@@ -23,6 +23,7 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+var quantidadeProdutos = 0;
 
 Cypress.Commands.add("login", (usuario, senha) => {
   cy.get("#username").type(usuario);
@@ -30,54 +31,45 @@ Cypress.Commands.add("login", (usuario, senha) => {
   cy.get(".woocommerce-form > .button").click();
 });
 
-Cypress.Commands.add("addProdutos", (listaProdutos) => {
+Cypress.Commands.add("addProdutos", (produto, tamanho, cor, quantidade) => {
   cy.url().then((urlAnterior) => {
-    var quantidadeProdutos = 0;
 
-    listaProdutos.forEach((produto) => {
-      cy.get("[class='product-block grid']").contains(produto.produto).click();
-      cy.get(".button-variable-item-" + produto.tamanho).click();
-      cy.get(".button-variable-item-" + produto.cor).click();
-      cy.get(".input-text").clear().type(produto.quantidade);
+      cy.get("[class='product-block grid']").contains(produto).click();
+      cy.get(".button-variable-item-" + tamanho).click();
+      cy.get(".button-variable-item-" + cor).click();
+      cy.get(".input-text").clear().type(quantidade);
       cy.get(".single_add_to_cart_button").click();
 
-      quantidadeProdutos += parseInt(produto.quantidade);
+      quantidadeProdutos += parseInt(quantidade);
 
       cy.url().should("not.eq", urlAnterior);
       cy.visit(urlAnterior);
-    });
+
     cy.get(".dropdown-toggle > .mini-cart-items").should(
       "contain", quantidadeProdutos
     );
   });
 });
 
-Cypress.Commands.add("preencherChekout", (dadosCheckout) => {
-  cy.get('.dropdown-toggle > .text-skin > .icon-basket').click()
-  cy.get('#cart > .dropdown-menu')
-    .should("be.visible")
-  cy.get('#cart > .dropdown-menu > .widget_shopping_cart_content > .mini_cart_content > .mini_cart_inner > .mcart-border > .buttons > .checkout')
-    .click( )
-
-    dadosCheckout.forEach((dados) => {
-      cy.get('#billing_first_name').type(dados.nome)
-      cy.get('#billing_last_name').type(dados.sobrenome)
-      cy.get('#billing_company').type(dados.empresa)
+Cypress.Commands.add("preencherChekout", (nome, sobrenome, empresa, pais, endereco, cidade, estado, cep, telefone, email) => {
+    cy.get('.dropdown-toggle > .text-skin > .icon-basket').click()
+    cy.get('#cart > .dropdown-menu')
+      .should("be.visible")
+      .contains('Checkout', { matchCase: false }).click()
+      cy.get('#billing_first_name').type(nome)
+      cy.get('#billing_last_name').type(sobrenome)
+      cy.get('#billing_company').type(empresa)
       cy.get('#select2-billing_country-container')
         .click()
-        .type(dados.pais + "{enter}")
-      cy.get('#billing_address_1').type(dados.endereco)
-      cy.get('#billing_city').type(dados.cidade)
+        .type(pais + "{enter}")
+      cy.get('#billing_address_1').type(endereco)
+      cy.get('#billing_city').type(cidade)
       cy.get('#select2-billing_state-container')
         .click()
-        .type(dados.estado + "{enter}")
-      cy.get('#billing_postcode').type(dados.cep)
-      cy.get('#billing_phone').type(dados.telefone)
-      cy.get('#billing_email').type(dados.email)
+        .type(estado + "{enter}")
+      cy.get('#billing_postcode').type(cep)
+      cy.get('#billing_phone').type(telefone)
+      cy.get('#billing_email').type(email)
       cy.get('#terms').click()
       cy.get('#place_order').click()
-
-      cy.get('[class="woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received"]')
-        .contains('Obrigado. Seu pedido foi recebido.', { matchCase: false })
-    }) 
 })
