@@ -19,8 +19,6 @@ context('Exercicio - Testes End-to-end - Fluxo de pedido', () => {
           "Blue",
           "3"
         )
-        cy.visit("produtos")
-        cy.get('#primary-menu > .menu-item-629 > a').click()
         cy.get(':nth-child(2) > .page-numbers').click()
         cy.addProdutos(
           "Balboa Persistence Tee",
