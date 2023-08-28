@@ -33,43 +33,58 @@ Cypress.Commands.add("login", (usuario, senha) => {
 
 Cypress.Commands.add("addProdutos", (produto, tamanho, cor, quantidade) => {
   cy.url().then((urlAnterior) => {
+    cy.get("[class='product-block grid']").contains(produto).click();
+    cy.get(".button-variable-item-" + tamanho).click();
+    cy.get(".button-variable-item-" + cor).click();
+    cy.get(".input-text").clear().type(quantidade);
+    cy.get(".single_add_to_cart_button").click();
 
-      cy.get("[class='product-block grid']").contains(produto).click();
-      cy.get(".button-variable-item-" + tamanho).click();
-      cy.get(".button-variable-item-" + cor).click();
-      cy.get(".input-text").clear().type(quantidade);
-      cy.get(".single_add_to_cart_button").click();
+    quantidadeProdutos += parseInt(quantidade);
 
-      quantidadeProdutos += parseInt(quantidade);
-
-      cy.url().should("not.eq", urlAnterior);
-      cy.visit(urlAnterior);
+    cy.url().should("not.eq", urlAnterior);
+    cy.visit(urlAnterior);
 
     cy.get(".dropdown-toggle > .mini-cart-items").should(
-      "contain", quantidadeProdutos
+      "contain",
+      quantidadeProdutos
     );
   });
 });
 
-Cypress.Commands.add("preencherChekout", (nome, sobrenome, empresa, pais, endereco, cidade, estado, cep, telefone, email) => {
-    cy.get('.dropdown-toggle > .text-skin > .icon-basket').click()
-    cy.get('#cart > .dropdown-menu')
+Cypress.Commands.add(
+  "preencherChekout",
+  (
+    nome,
+    sobrenome,
+    empresa,
+    pais,
+    endereco,
+    cidade,
+    estado,
+    cep,
+    telefone,
+    email
+  ) => {
+    cy.get(".dropdown-toggle > .text-skin > .icon-basket").click();
+    cy.get("#cart > .dropdown-menu")
       .should("be.visible")
-      .contains('Checkout', { matchCase: false }).click()
-      cy.get('#billing_first_name').type(nome)
-      cy.get('#billing_last_name').type(sobrenome)
-      cy.get('#billing_company').type(empresa)
-      cy.get('#select2-billing_country-container')
-        .click()
-        .type(pais + "{enter}")
-      cy.get('#billing_address_1').type(endereco)
-      cy.get('#billing_city').type(cidade)
-      cy.get('#select2-billing_state-container')
-        .click()
-        .type(estado + "{enter}")
-      cy.get('#billing_postcode').type(cep)
-      cy.get('#billing_phone').type(telefone)
-      cy.get('#billing_email').type(email)
-      cy.get('#terms').click()
-      cy.get('#place_order').click()
-})
+      .contains("Checkout", { matchCase: false })
+      .click();
+    cy.get("#billing_first_name").type(nome);
+    cy.get("#billing_last_name").type(sobrenome);
+    cy.get("#billing_company").type(empresa);
+    cy.get("#select2-billing_country-container")
+      .click()
+      .type(pais + "{enter}");
+    cy.get("#billing_address_1").type(endereco);
+    cy.get("#billing_city").type(cidade);
+    cy.get("#select2-billing_state-container")
+      .click()
+      .type(estado + "{enter}");
+    cy.get("#billing_postcode").type(cep);
+    cy.get("#billing_phone").type(telefone);
+    cy.get("#billing_email").type(email);
+    cy.get("#terms").click();
+    cy.get("#place_order").click();
+  }
+);

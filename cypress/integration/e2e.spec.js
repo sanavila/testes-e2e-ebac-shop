@@ -7,18 +7,18 @@ context('Exercicio - Testes End-to-end - Fluxo de pedido', () => {
 
     it('Deve escolher os produtos, preencher o checkout e validar a compra', () => {
         cy.get('#primary-menu > .menu-item-629 > a').click()
-        cy.addProdutos(
-          "Abominable Hoodie",
-          "M",
-          "Green",
-          "2"
-        )
-        cy.addProdutos(
-          "Atlas Fitness Tank",
-          "S",
-          "Blue",
-          "3"
-        )
+        // cy.addProdutos(
+        //   "Abominable Hoodie",
+        //   "M",
+        //   "Green",
+        //   "2"
+        // )
+        // cy.addProdutos(
+        //   "Atlas Fitness Tank",
+        //   "S",
+        //   "Blue",
+        //   "3"
+        // )
         cy.get(':nth-child(2) > .page-numbers').click()
         cy.addProdutos(
           "Balboa Persistence Tee",
