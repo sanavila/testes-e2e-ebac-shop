@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clonar repositório') {
+            steps {
+                git branch: 'main', credentialsId: 'ad14a24c-1e12-4382-b0c4-0459f93d0afe', url: 'https://github.com/sanavila/testes-e2e-ebac-shop.git'
+            }
+        }
+        stage('Configurar Ambiente') {
+            steps {
+                script {
+                    // Defina a variável de ambiente CYPRESS_INSTALL_BINARY como 0
+                    env.CYPRESS_INSTALL_BINARY = "0"
+                }
+            }
+        }
+        stage('Deve instalar dependencias') {
+            steps {
+                bat 'npm install'
+            }
+        }
+        stage('Rodar os testes') {
+            steps {
+                bat 'npm run cy:run'
+            }
+        }
+    }
+}
